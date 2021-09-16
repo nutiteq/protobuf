@@ -50,7 +50,7 @@ struct PROTOBUF_EXPORT TableStruct_google_2fprotobuf_2fany_2eproto {
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::PROTOBUF_NAMESPACE_ID::internal::FieldMetadata field_metadata[];
   static const ::PROTOBUF_NAMESPACE_ID::internal::SerializationTable serialization_table[];
-  static const ::PROTOBUF_NAMESPACE_ID::uint32 offsets[];
+  static const uint32_t offsets[];
 };
 PROTOBUF_EXPORT extern const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_google_2fprotobuf_2fany_2eproto;
 PROTOBUF_NAMESPACE_OPEN
@@ -59,7 +59,7 @@ struct AnyDefaultTypeInternal;
 PROTOBUF_EXPORT extern AnyDefaultTypeInternal _Any_default_instance_;
 PROTOBUF_NAMESPACE_CLOSE
 PROTOBUF_NAMESPACE_OPEN
-template<> PROTOBUF_EXPORT PROTOBUF_NAMESPACE_ID::Any* Arena::CreateMaybeMessage<PROTOBUF_NAMESPACE_ID::Any>(Arena*);
+template<> PROTOBUF_EXPORT ::PROTOBUF_NAMESPACE_ID::Any* Arena::CreateMaybeMessage<::PROTOBUF_NAMESPACE_ID::Any>(Arena*);
 PROTOBUF_NAMESPACE_CLOSE
 PROTOBUF_NAMESPACE_OPEN
 
@@ -84,7 +84,11 @@ class PROTOBUF_EXPORT Any final :
   }
   inline Any& operator=(Any&& from) noexcept {
     if (this == &from) return *this;
-    if (GetOwningArena() == from.GetOwningArena()) {
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
       InternalSwap(&from);
     } else {
       CopyFrom(from);
@@ -114,11 +118,11 @@ class PROTOBUF_EXPORT Any final :
   // implements Any -----------------------------------------------
 
   bool PackFrom(const ::PROTOBUF_NAMESPACE_ID::Message& message) {
-    return _any_metadata_.PackFrom(message);
+    return _any_metadata_.PackFrom(GetArena(), message);
   }
   bool PackFrom(const ::PROTOBUF_NAMESPACE_ID::Message& message,
                 ::PROTOBUF_NAMESPACE_ID::ConstStringParam type_url_prefix) {
-    return _any_metadata_.PackFrom(message, type_url_prefix);
+    return _any_metadata_.PackFrom(GetArena(), message, type_url_prefix);
   }
   bool UnpackTo(::PROTOBUF_NAMESPACE_ID::Message* message) const {
     return _any_metadata_.UnpackTo(message);
@@ -129,12 +133,12 @@ class PROTOBUF_EXPORT Any final :
       const ::PROTOBUF_NAMESPACE_ID::FieldDescriptor** value_field);
   template <typename T, class = typename std::enable_if<!std::is_convertible<T, const ::PROTOBUF_NAMESPACE_ID::Message&>::value>::type>
   bool PackFrom(const T& message) {
-    return _any_metadata_.PackFrom<T>(message);
+    return _any_metadata_.PackFrom<T>(GetArena(), message);
   }
   template <typename T, class = typename std::enable_if<!std::is_convertible<T, const ::PROTOBUF_NAMESPACE_ID::Message&>::value>::type>
   bool PackFrom(const T& message,
                 ::PROTOBUF_NAMESPACE_ID::ConstStringParam type_url_prefix) {
-    return _any_metadata_.PackFrom<T>(message, type_url_prefix);}
+    return _any_metadata_.PackFrom<T>(GetArena(), message, type_url_prefix);}
   template <typename T, class = typename std::enable_if<!std::is_convertible<T, const ::PROTOBUF_NAMESPACE_ID::Message&>::value>::type>
   bool UnpackTo(T* message) const {
     return _any_metadata_.UnpackTo<T>(message);
@@ -149,7 +153,12 @@ class PROTOBUF_EXPORT Any final :
   }
   inline void Swap(Any* other) {
     if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
     if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
       InternalSwap(other);
     } else {
       ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
@@ -175,15 +184,15 @@ class PROTOBUF_EXPORT Any final :
   using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
   void MergeFrom(const Any& from);
   private:
-  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message*to, const ::PROTOBUF_NAMESPACE_ID::Message&from);
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to, const ::PROTOBUF_NAMESPACE_ID::Message& from);
   public:
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
   size_t ByteSizeLong() const final;
   const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
-  ::PROTOBUF_NAMESPACE_ID::uint8* _InternalSerialize(
-      ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
   int GetCachedSize() const final { return _cached_size_.Get(); }
 
   private:
@@ -311,6 +320,11 @@ inline void Any::set_allocated_type_url(std::string* type_url) {
   }
   type_url_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), type_url,
       GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (type_url_.IsDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited())) {
+    type_url_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), "", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   // @@protoc_insertion_point(field_set_allocated:google.protobuf.Any.type_url)
 }
 
@@ -357,6 +371,11 @@ inline void Any::set_allocated_value(std::string* value) {
   }
   value_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), value,
       GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (value_.IsDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited())) {
+    value_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), "", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   // @@protoc_insertion_point(field_set_allocated:google.protobuf.Any.value)
 }
 

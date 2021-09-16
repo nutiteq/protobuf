@@ -206,7 +206,7 @@ with info about your project (name and website) so we can add an entry for you.
    * Extensions: 1071
 
 1. protokt
-   * Website: https://github.com/toasttab/protokt (Currently Private but will be open soon.)
+   * Website: https://github.com/open-toast/protokt
    * Extensions: 1072
 
 1. Dart port of protocol buffers
@@ -280,3 +280,11 @@ with info about your project (name and website) so we can add an entry for you.
 1. Glitchdot (Currently Private)
    * Website: https://go.glitchdot.com
    * Extension: 1109
+
+1. eigr/protocol
+   * Website: https://eigr.io
+   * Extension: 1110-1114
+
+1. Container Object Storage Interface (COSI)
+   * Website: https://github.com/kubernetes-sigs/container-object-storage-interface-spec
+   * Extension: 1115-1124
