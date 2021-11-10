@@ -59,6 +59,7 @@ import protobuf_unittest.UnittestProto.TestOneof2;
 import protobuf_unittest.UnittestProto.TestRequired;
 import proto2_wireformat_unittest.UnittestMsetWireFormat.TestMessageSet;
 import java.io.StringReader;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
@@ -277,7 +278,7 @@ public class TextFormatTest {
    * are converted directly to bytes, *not* encoded using UTF-8.
    */
   private ByteString bytes(String str) {
-    return ByteString.copyFrom(str.getBytes(Internal.ISO_8859_1));
+    return ByteString.copyFrom(str.getBytes(StandardCharsets.ISO_8859_1));
   }
 
   /**
@@ -1814,5 +1815,16 @@ public class TextFormatTest {
             + "  value: 30\n"
             + "}\n";
     assertThat(TextFormat.printer().printToString(message)).isEqualTo(text);
+  }
+
+  @Test
+  public void testPreservesFloatingPointNegative0() throws Exception {
+    proto3_unittest.UnittestProto3.TestAllTypes message =
+        proto3_unittest.UnittestProto3.TestAllTypes.newBuilder()
+            .setOptionalFloat(-0.0f)
+            .setOptionalDouble(-0.0)
+            .build();
+    assertThat(TextFormat.printer().printToString(message))
+        .isEqualTo("optional_float: -0.0\noptional_double: -0.0\n");
   }
 }

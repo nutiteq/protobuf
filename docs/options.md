@@ -205,7 +205,7 @@ with info about your project (name and website) so we can add an entry for you.
    * Website: https://github.com/envoyproxy/protoc-gen-validate
    * Extensions: 1071
 
-1. protokt
+1. Protokt
    * Website: https://github.com/open-toast/protokt
    * Extensions: 1072
 
@@ -288,3 +288,11 @@ with info about your project (name and website) so we can add an entry for you.
 1. Container Object Storage Interface (COSI)
    * Website: https://github.com/kubernetes-sigs/container-object-storage-interface-spec
    * Extension: 1115-1124
+
+1. Protoc-gen-jsonschema
+   * Website: https://github.com/chrusty/protoc-gen-jsonschema
+   * Extension: 1125-1129
+
+1. Protoc-gen-checker
+   * Website: https://github.com/Intrinsec/protoc-gen-checker
+   * Extension: 1130-1139

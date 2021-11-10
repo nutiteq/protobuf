@@ -297,6 +297,8 @@ java_EXTRA_DIST=                                                                
   java/core/src/main/java/com/google/protobuf/ByteBufferWriter.java                \
   java/core/src/main/java/com/google/protobuf/ByteOutput.java                      \
   java/core/src/main/java/com/google/protobuf/ByteString.java                      \
+  java/core/src/main/java/com/google/protobuf/CanIgnoreReturnValue.java            \
+  java/core/src/main/java/com/google/protobuf/CheckReturnValue.java                \
   java/core/src/main/java/com/google/protobuf/CodedInputStream.java                \
   java/core/src/main/java/com/google/protobuf/CodedInputStreamReader.java          \
   java/core/src/main/java/com/google/protobuf/CodedOutputStream.java               \
@@ -1148,19 +1150,14 @@ ruby_EXTRA_DIST=                                                             \
   ruby/lib/google/protobuf/well_known_types.rb                               \
   ruby/lib/google/protobuf.rb                                                \
   ruby/pom.xml                                                               \
-  ruby/src/main/java/com/google/protobuf/jruby/RubyBuilder.java              \
   ruby/src/main/java/com/google/protobuf/jruby/RubyDescriptor.java           \
   ruby/src/main/java/com/google/protobuf/jruby/RubyDescriptorPool.java       \
   ruby/src/main/java/com/google/protobuf/jruby/RubyEnum.java                 \
-  ruby/src/main/java/com/google/protobuf/jruby/RubyEnumBuilderContext.java   \
   ruby/src/main/java/com/google/protobuf/jruby/RubyEnumDescriptor.java       \
   ruby/src/main/java/com/google/protobuf/jruby/RubyFieldDescriptor.java      \
-  ruby/src/main/java/com/google/protobuf/jruby/RubyFileBuilderContext.java   \
   ruby/src/main/java/com/google/protobuf/jruby/RubyFileDescriptor.java       \
   ruby/src/main/java/com/google/protobuf/jruby/RubyMap.java                  \
   ruby/src/main/java/com/google/protobuf/jruby/RubyMessage.java              \
-  ruby/src/main/java/com/google/protobuf/jruby/RubyMessageBuilderContext.java \
-  ruby/src/main/java/com/google/protobuf/jruby/RubyOneofBuilderContext.java  \
   ruby/src/main/java/com/google/protobuf/jruby/RubyOneofDescriptor.java      \
   ruby/src/main/java/com/google/protobuf/jruby/RubyProtobuf.java             \
   ruby/src/main/java/com/google/protobuf/jruby/RubyRepeatedField.java        \
@@ -1374,64 +1371,68 @@ js_EXTRA_DIST=                                                         \
 
 all_EXTRA_DIST=$(csharp_EXTRA_DIST) $(java_EXTRA_DIST) $(objectivec_EXTRA_DIST) $(php_EXTRA_DIST) $(python_EXTRA_DIST) $(ruby_EXTRA_DIST) $(js_EXTRA_DIST)
 
-EXTRA_DIST = $(@DIST_LANG@_EXTRA_DIST)   \
-  autogen.sh                             \
-  generate_descriptor_proto.sh           \
-  README.md                              \
-  LICENSE                                \
-  CONTRIBUTORS.txt                       \
-  CHANGES.txt                            \
-  update_file_lists.sh                   \
-  BUILD                                  \
-  WORKSPACE                              \
-  cmake/CMakeLists.txt                   \
-  cmake/README.md                        \
-  cmake/conformance.cmake                \
-  cmake/examples.cmake                   \
-  cmake/extract_includes.bat.in          \
-  cmake/install.cmake                    \
-  cmake/libprotobuf.cmake                \
-  cmake/libprotobuf-lite.cmake           \
-  cmake/libprotoc.cmake                  \
-  cmake/protobuf-config-version.cmake.in \
-  cmake/protobuf-config.cmake.in         \
-  cmake/protobuf-lite.pc.cmake           \
-  cmake/protobuf-module.cmake.in         \
-  cmake/protobuf-options.cmake           \
-  cmake/protobuf.pc.cmake                \
-  cmake/protoc.cmake                     \
-  cmake/tests.cmake                      \
-  cmake/version.rc.in                    \
-  compiler_config_setting.bzl            \
-  build_files_updated_unittest.sh        \
-  cc_proto_blacklist_test.bzl            \
-  editors/README.txt                     \
-  editors/proto.vim                      \
-  editors/protobuf-mode.el               \
-  examples/AddPerson.java                \
-  examples/BUILD                         \
-  examples/CMakeLists.txt                \
-  examples/ListPeople.java               \
-  examples/Makefile                      \
-  examples/README.md                     \
-  examples/WORKSPACE                     \
-  examples/add_person.cc                 \
-  examples/add_person.dart               \
-  examples/add_person.go                 \
-  examples/add_person.py                 \
-  examples/add_person_test.go            \
-  examples/addressbook.proto             \
-  examples/list_people.cc                \
-  examples/list_people.dart              \
-  examples/list_people.go                \
-  examples/list_people.py                \
-  examples/list_people_test.go           \
-  examples/pubspec.yaml                  \
-  protobuf.bzl                           \
-  protobuf_deps.bzl                      \
-  third_party/six.BUILD                  \
-  third_party/zlib.BUILD                 \
-  util/python/BUILD                      \
+EXTRA_DIST = $(@DIST_LANG@_EXTRA_DIST)              \
+  autogen.sh                                        \
+  generate_descriptor_proto.sh                      \
+  README.md                                         \
+  LICENSE                                           \
+  CONTRIBUTORS.txt                                  \
+  CHANGES.txt                                       \
+  update_file_lists.sh                              \
+  BUILD                                             \
+  WORKSPACE                                         \
+  cmake/CMakeLists.txt                              \
+  cmake/README.md                                   \
+  cmake/conformance.cmake                           \
+  cmake/examples.cmake                              \
+  cmake/extract_includes.bat.in                     \
+  cmake/install.cmake                               \
+  cmake/libprotobuf.cmake                           \
+  cmake/libprotobuf-lite.cmake                      \
+  cmake/libprotoc.cmake                             \
+  cmake/protobuf-config-version.cmake.in            \
+  cmake/protobuf-config.cmake.in                    \
+  cmake/protobuf-lite.pc.cmake                      \
+  cmake/protobuf-module.cmake.in                    \
+  cmake/protobuf-options.cmake                      \
+  cmake/protobuf.pc.cmake                           \
+  cmake/protoc.cmake                                \
+  cmake/tests.cmake                                 \
+  cmake/version.rc.in                               \
+  compiler_config_setting.bzl                       \
+  build_files_updated_unittest.sh                   \
+  cc_proto_blacklist_test.bzl                       \
+  editors/README.txt                                \
+  editors/proto.vim                                 \
+  editors/protobuf-mode.el                          \
+  examples/AddPerson.java                           \
+  examples/BUILD                                    \
+  examples/CMakeLists.txt                           \
+  examples/ListPeople.java                          \
+  examples/Makefile                                 \
+  examples/README.md                                \
+  examples/WORKSPACE                                \
+  examples/add_person.cc                            \
+  examples/add_person.dart                          \
+  examples/add_person.py                            \
+  examples/addressbook.proto                        \
+  examples/go/cmd/add_person/add_person.go          \
+  examples/go/cmd/add_person/add_person_test.go     \
+  examples/go/cmd/list_people/list_people.go        \
+  examples/go/cmd/list_people/list_people_test.go   \
+  examples/go/go.sum                                \
+  examples/go/go.mod                                \
+  examples/list_people.cc                           \
+  examples/list_people.dart                         \
+  examples/list_people.py                           \
+  examples/pubspec.yaml                             \
+  maven_install.json                                \
+  protobuf.bzl                                      \
+  protobuf_deps.bzl                                 \
+  protobuf_release.bzl                              \
+  protobuf_version.bzl                              \
+  third_party/zlib.BUILD                            \
+  util/python/BUILD                                 \
   internal.bzl
 
 
